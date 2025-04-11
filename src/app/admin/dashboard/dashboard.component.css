@@ -135,3 +135,17 @@
   }
   
   body > * { max-width: 45rem; margin-inline: auto}
+  .table-dark th, .table-dark td {
+    vertical-align: middle;
+  }
+  
+  .table-dark ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .table-dark ul li::before {
+    content: "• ";
+    color: #0dcaf0;
+  }
+  

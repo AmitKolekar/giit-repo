@@ -1,12 +1,22 @@
-# Stage 1: Build the Angular/React app
-FROM node:18-alpine as builder
+# Step 1: Build Angular App
+FROM node:18 AS builder
+
 WORKDIR /app
 COPY . .
-RUN npm install && npm run build
+RUN npm install
+RUN npm run build --prod
 
-# Stage 2: Serve it with Nginx
+# Step 2: Serve with Nginx
 FROM nginx:alpine
-COPY --from=builder /app/dist/browser /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Remove default nginx page
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy build files
+COPY --from=builder /app/dist/employee-leave-management /usr/share/nginx/html
+
+# Copy custom nginx config (optional)
+# COPY nginx.conf /etc/nginx/nginx.conf
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

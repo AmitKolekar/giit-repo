@@ -1,13 +1,12 @@
-# Use a multi-stage build to keep the image smaller
-# First stage: Build Angular application
-FROM node:14 as builder
+# Stage 1: Build the Angular/React app
+FROM node:18-alpine as builder
 WORKDIR /app
 COPY . .
-RUN npm install
-RUN npm run build --prod
+RUN npm install && npm run build
 
-# Second stage: Set up the Nginx server to serve the Angular app
+# Stage 2: Serve it with Nginx
 FROM nginx:alpine
-COPY --from=builder /app/dist/employee-leave-management /usr/share/nginx/html
+COPY --from=builder /app/dist/browser /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
